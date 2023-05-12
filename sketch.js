@@ -9,6 +9,10 @@ let fixedWidthFont
 let variableWidthFont
 let instructions
 let debugCorner /* output debug text in the bottom left corner of the canvas */
+let startingX /* the x-position of the leftmost line */
+let startingY /* the y-position of the topmost line */
+let tileSize /* the size of each Tetris tile. */
+let game /* what are we going to be displaying? a game. */
 
 
 function preload() {
@@ -19,7 +23,7 @@ function preload() {
 
 
 function setup() {
-    let cnv = createCanvas(600, 300)
+    let cnv = createCanvas(800, 1000)
     cnv.parent('#canvas')
     colorMode(HSB, 360, 100, 100, 100)
     textFont(font, 14)
@@ -35,6 +39,16 @@ function setup() {
 
 function draw() {
     background(234, 34, 24)
+    // y starts at the tile size.
+    tileSize = 20
+    startingY = tileSize
+    /* x is positioned such that the board is centered in the middle of the
+       grid. since there are 5 lines to the left, 5 tileSizes should be removed
+       from width/2. */
+    startingX = width/2 - tileSize*5
+
+    game = new Game(startingX, startingY, tileSize)
+    game.display()
 
     /* debugCorner needs to be last so its z-index is highest */
     debugCorner.setText(`frameCount: ${frameCount}`, 2)
