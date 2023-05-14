@@ -9,10 +9,17 @@ class Game {
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] // a row
             )
         }
-        this.playingField[19][5] = 1
-        this.playingField[19][4] = 1
-        this.playingField[18][5] = 1
-        this.playingField[18][4] = 1
+        this.piecesList = [
+            [[-1, 0], [0, 0], [1, 0], [2, 0]], // i block
+            [[-1, -1], [0, -1], [1, -1], [1, 0]], // l block
+            [[-1, 0], [-1, -1], [0, -1], [1, -1]], // j block
+            [[-1, 0], [0, 0], [0, 1], [1, 1]], // s block
+            [[-1, 1], [0, 1], [0, 0], [1, 0]], // z block
+            [[-1, 0], [0, 0], [-1, 1], [0, 1]], // o block
+            [[-1, 0], [0, 0], [0, 1], [1, 0]] // t block
+        ]
+        this.currentPiece = random(this.piecesList)
+        this.currentPiecePos = [4, 1] // x-pos, y-pos
     }
 
     /* Description: Displays the entire game. Is the most important function. */
@@ -32,7 +39,7 @@ class Game {
                 i*this.tileSize)
         }
 
-        stroke(0, 0, 100)
+        noStroke()
         fill(0, 0, 100)
         // for each row
         let colIndex = 0
@@ -43,14 +50,26 @@ class Game {
                 // if the cell exists there...
                 if (cell) {
                     // draw it!
-                    rect(this.startingX + rowIndex*this.tileSize + 2,
-                         this.startingY + colIndex*this.tileSize + 2,
-                         this.startingX + rowIndex*this.tileSize + this.tileSize - 2,
-                         this.startingY + colIndex*this.tileSize + this.tileSize - 2)
+                    rect(this.startingX + rowIndex*this.tileSize + 1,
+                         this.startingY + colIndex*this.tileSize + 1,
+                         this.startingX + rowIndex*this.tileSize + this.tileSize - 1,
+                         this.startingY + colIndex*this.tileSize + this.tileSize - 1)
                 }
                 rowIndex++
             }
             colIndex++
+        }
+        // display the current figure
+        for (let cell of this.currentPiece) {
+            // the y-pos is the y-pos of the piece minus the y-pos of the offset
+            let colIndex = this.currentPiecePos[1] - cell[1]
+            // the x-pos is the x-pos of the piece plus the x-pos of the offset
+            let rowIndex = this.currentPiecePos[0] + cell[0]
+            // draw it!
+            rect(this.startingX + rowIndex*this.tileSize + 1,
+                this.startingY + colIndex*this.tileSize + 1,
+                this.startingX + rowIndex*this.tileSize + this.tileSize - 1,
+                this.startingY + colIndex*this.tileSize + this.tileSize - 1)
         }
     }
 }

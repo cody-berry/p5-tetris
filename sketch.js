@@ -34,11 +34,6 @@ function setup() {
         numpad 1 → freeze sketch</pre>`)
 
     debugCorner = new CanvasDebugCorner(5)
-}
-
-
-function draw() {
-    background(234, 34, 24)
     // y starts at the tile size.
     tileSize = 20
     startingY = tileSize
@@ -48,6 +43,11 @@ function draw() {
     startingX = width/2 - tileSize*5
 
     game = new Game(startingX, startingY, tileSize)
+}
+
+
+function draw() {
+    background(234, 34, 24)
     game.display()
 
     /* debugCorner needs to be last so its z-index is highest */
