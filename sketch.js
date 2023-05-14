@@ -68,6 +68,16 @@ function keyPressed() {
             sketch stopped</pre>`)
     }
 
+    /* move left */
+    if (keyCode === LEFT_ARROW) {
+        game.moveLeft()
+    }
+
+    /* move right */
+    if (keyCode === RIGHT_ARROW) {
+        game.moveRight()
+    }
+
     if (key === '`') { /* toggle debug corner visibility */
         debugCorner.visible = !debugCorner.visible
         console.log(`debugCorner visibility set to ${debugCorner.visible}`)

@@ -72,4 +72,12 @@ class Game {
                 this.startingY + colIndex*this.tileSize + this.tileSize - 1)
         }
     }
+
+    moveLeft() {
+        this.currentPiecePos[0]--
+    }
+
+    moveRight() {
+        this.currentPiecePos[0]++
+    }
 }
