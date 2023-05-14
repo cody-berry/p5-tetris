@@ -20,48 +20,7 @@ class Game {
         ]
         this.currentPiece = random(this.piecesList)
         this.currentPiecePos = [4, 1] // x-pos, y-pos
-        this.playingField[0][0] = 1
-        this.playingField[0][1] = 1
-        this.playingField[0][8] = 1
-        this.playingField[0][9] = 1
-        this.playingField[1][0] = 1
-        this.playingField[1][9] = 1
-        this.playingField[2][0] = 1
-        this.playingField[2][9] = 1
-        this.playingField[3][0] = 1
-        this.playingField[3][9] = 1
-        this.playingField[4][0] = 1
-        this.playingField[4][9] = 1
-        this.playingField[5][0] = 1
-        this.playingField[5][9] = 1
-        this.playingField[6][0] = 1
-        this.playingField[6][9] = 1
-        this.playingField[7][0] = 1
-        this.playingField[7][9] = 1
-        this.playingField[8][0] = 1
-        this.playingField[8][9] = 1
-        this.playingField[9][0] = 1
-        this.playingField[9][9] = 1
-        this.playingField[10][0] = 1
-        this.playingField[10][9] = 1
-        this.playingField[11][0] = 1
-        this.playingField[11][9] = 1
-        this.playingField[12][9] = 1
-        this.playingField[12][0] = 1
-        this.playingField[13][9] = 1
-        this.playingField[13][0] = 1
-        this.playingField[14][9] = 1
-        this.playingField[14][0] = 1
-        this.playingField[15][9] = 1
-        this.playingField[15][0] = 1
-        this.playingField[16][9] = 1
-        this.playingField[16][0] = 1
-        this.playingField[17][9] = 1
-        this.playingField[17][0] = 1
-        this.playingField[18][9] = 1
-        this.playingField[18][0] = 1
-        this.playingField[19][9] = 1
-        this.playingField[19][0] = 1
+        this.framesUntilDown = 70
     }
 
     /* Description: Displays the entire game. Is the most important function. */
@@ -79,6 +38,14 @@ class Game {
             line(this.startingX, this.startingY + i*this.tileSize,
                 this.startingX + 10*this.tileSize, this.startingY +
                 i*this.tileSize)
+        }
+
+        if (frameCount % this.framesUntilDown === 0) {
+            let currentPiecePosCopy = [...this.currentPiecePos]
+            this.currentPiecePos[1]++ // move down one
+            if (!this.checkBorders()) {
+                this.currentPiecePos = currentPiecePosCopy
+            }
         }
 
         noStroke()
@@ -138,10 +105,6 @@ class Game {
             let colIndex = this.currentPiecePos[1] - cell[1]
             // the x-pos is the x-pos of the piece plus the x-pos of the offset
             let rowIndex = this.currentPiecePos[0] + cell[0]
-            // if the playing field intersects with the piece, return false
-            if (this.playingField[colIndex][rowIndex]) {
-                return false
-            }
             // if the cell goes to one of the borders, return false
             if (rowIndex < 0) {
                 return false
@@ -150,6 +113,10 @@ class Game {
                 return false
             }
             if (colIndex > 19) {
+                return false
+            }
+            // if the playing field intersects with the piece, return false
+            if (this.playingField[colIndex][rowIndex]) {
                 return false
             }
         }
