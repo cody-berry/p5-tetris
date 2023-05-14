@@ -54,9 +54,6 @@ function draw() {
     debugCorner.setText(`frameCount: ${frameCount}`, 2)
     debugCorner.setText(`fps: ${frameRate().toFixed(0)}`, 1)
     debugCorner.showBottom()
-
-    if (frameCount > 3000)
-        noLoop()
 }
 
 
