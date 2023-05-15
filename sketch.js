@@ -13,6 +13,7 @@ let startingX /* the x-position of the leftmost line */
 let startingY /* the y-position of the topmost line */
 let tileSize /* the size of each Tetris tile. */
 let game /* what are we going to be displaying? a game. */
+let direction /* what direction are we currently travelling? */
 
 
 function preload() {
@@ -48,7 +49,20 @@ function setup() {
 
 function draw() {
     background(234, 34, 24)
+
     game.display()
+    game.framesUntilDown = game.framesUntilDownDefault
+    if (direction === 'left' &&
+        frameCount % 7 === 0) {
+        game.moveLeft()
+    }
+    if (direction === 'right' &&
+        frameCount % 7 === 0) {
+        game.moveRight()
+    }
+    if (direction === 'down') {
+        game.framesUntilDown = 7
+    }
 
     /* debugCorner needs to be last so its z-index is highest */
     debugCorner.setText(`frameCount: ${frameCount}`, 2)
@@ -68,17 +82,43 @@ function keyPressed() {
     /* move left */
     if (keyCode === LEFT_ARROW) {
         game.moveLeft()
+        direction = 'left'
     }
 
     /* move right */
     if (keyCode === RIGHT_ARROW) {
         game.moveRight()
+        direction = 'right'
+    }
+
+    /* move down */
+    if (keyCode === DOWN_ARROW) {
+        direction = 'down'
+    }
+
+    /* drops every frame */
+    if (keyCode === UP_ARROW) {
+        game.setInPlace()
+    }
+
+    /* rotates left */
+    if (key === '.') {
+        game.rotateLeft()
+    }
+
+    /* rotates right */
+    if (key === ',') {
+        game.rotateRight()
     }
 
     if (key === '`') { /* toggle debug corner visibility */
         debugCorner.visible = !debugCorner.visible
         console.log(`debugCorner visibility set to ${debugCorner.visible}`)
     }
+}
+
+function keyReleased() {
+    direction = 'none'
 }
 
 

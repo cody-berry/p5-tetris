@@ -5,9 +5,11 @@ class Game {
         this.tileSize = tileSize
         this.playingField = [] // the playing field that we have
         for (let i = 0; i < 20; i++) {
-            this.playingField.push(
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0] // a row
-            )
+            let row = []
+            for (let j = 0; j < 10; j++) {
+                row.push([0, [0, 0, 0]])
+            }
+            this.playingField.push(row)
         }
         this.piecesList = [
             [[-1, 0], [0, 0], [1, 0], [2, 0]], // i block
@@ -18,13 +20,45 @@ class Game {
             [[-1, 0], [0, 0], [-1, 1], [0, 1]], // o block
             [[-1, 0], [0, 0], [0, 1], [1, 0]] // t block
         ]
-        this.currentPiece = random(this.piecesList)
+        this.currentPiece = JSON.parse(JSON.stringify(random(this.piecesList)))
         this.currentPiecePos = [4, 1] // x-pos, y-pos
-        this.framesUntilDown = 70
+        this.framesUntilDownDefault = 70
+        this.framesUntilDown = this.framesUntilDownDefault
+    }
+
+    /* Description: Clears lines. */
+    checkLines() {
+        let colIndex = 19
+        let shift = 0 // how many lines do we shift?
+        // iterate through each row
+        while (colIndex > -1) {
+            // iterate through each line
+            let lineClear = true
+            for (let cell of this.playingField[colIndex]) {
+                // if there isn't a cell filled, then there is no line clear
+                if (!cell) {
+                    lineClear = false
+                }
+            }
+            // if there is a line clear, remove the line
+            if (lineClear) {
+                this.playingField[colIndex] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                shift++
+                this.framesUntilDownDefault--
+                this.framesUntilDown = this.framesUntilDownDefault
+            } else { // otherwise, shift it
+                this.playingField[colIndex + shift] = this.playingField[colIndex]
+                if (shift > 0) {
+                    this.playingField[colIndex] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                }
+            }
+            colIndex--
+        }
     }
 
     /* Description: Displays the entire game. Is the most important function. */
     display() {
+        this.checkLines()
         stroke(0, 0, 0)
         strokeWeight(1)
         // vertical lines
@@ -44,7 +78,7 @@ class Game {
             let currentPiecePosCopy = [...this.currentPiecePos]
             this.currentPiecePos[1]++ // move down one
             if (!this.checkBorders()) {
-                this.currentPiecePos = currentPiecePosCopy
+                this.setInPlace()
             }
         }
 
@@ -121,5 +155,61 @@ class Game {
             }
         }
         return true
+    }
+
+    setInPlace() {
+        // move the center down repeatedly and check the borders every time
+        while (this.checkBorders()) {
+            this.currentPiecePos[1]++
+        }
+        // add blocks to the playing field
+        for (let cell of this.currentPiece) {
+            // the y-pos is the y-pos of the piece minus the y-pos of the offset
+            let colIndex = this.currentPiecePos[1] - cell[1]
+            // the x-pos is the x-pos of the piece plus the x-pos of the offset
+            let rowIndex = this.currentPiecePos[0] + cell[0]
+            // now add it to the playing field
+            this.playingField[colIndex-1][rowIndex] = 1
+        }
+        this.currentPiece = JSON.parse(JSON.stringify(random(this.piecesList)))
+        this.currentPiecePos = [4, 1] // x-pos, y-pos
+    }
+
+    rotateLeft() {
+        let currentPieceCopy =
+            JSON.parse(JSON.stringify(this.currentPiece))
+        let i = 0
+        for (let cell of this.currentPiece) {
+            // up rotates to left
+            let cellY = cell[1]
+            // right rotates to up
+            let cellX = cell[0]
+
+            this.currentPiece[i][0] = -cellY
+            this.currentPiece[i][1] = cellX
+            i++
+        }
+        if (!this.checkBorders()) {
+            this.currentPiece = currentPieceCopy
+        }
+    }
+
+    rotateRight() {
+        let currentPieceCopy =
+            JSON.parse(JSON.stringify(this.currentPiece))
+        let i = 0
+        for (let cell of this.currentPiece) {
+            // up rotates to right
+            let cellY = cell[1]
+            // right rotates to down
+            let cellX = cell[0]
+
+            this.currentPiece[i][0] = cellY
+            this.currentPiece[i][1] = -cellX
+            i++
+        }
+        if (!this.checkBorders()) {
+            this.currentPiece = currentPieceCopy
+        }
     }
 }
