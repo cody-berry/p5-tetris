@@ -7,21 +7,24 @@ class Game {
         for (let i = 0; i < 20; i++) {
             let row = []
             for (let j = 0; j < 10; j++) {
-                row.push([0, [0, 0, 0]])
+                row.push([0, [0, 0, 90]])
             }
             this.playingField.push(row)
         }
         this.piecesList = [
-            [[-1, 0], [0, 0], [1, 0], [2, 0]], // i block
-            [[-1, -1], [0, -1], [1, -1], [1, 0]], // l block
-            [[-1, 0], [-1, -1], [0, -1], [1, -1]], // j block
-            [[-1, 0], [0, 0], [0, 1], [1, 1]], // s block
-            [[-1, 1], [0, 1], [0, 0], [1, 0]], // z block
-            [[-1, 0], [0, 0], [-1, 1], [0, 1]], // o block
-            [[-1, 0], [0, 0], [0, 1], [1, 0]] // t block
+            [[[-1, 0], [0, 0], [1, 0], [2, 0]], [188, 83, 65]], // i block
+            [[[-1, -1], [0, -1], [1, -1], [1, 0]], [216, 96, 98]], // l block
+            [[[-1, 0], [-1, -1], [0, -1], [1, -1]], [6, 54, 85]], // j block
+            [[[-1, 0], [0, 0], [0, 1], [1, 1]], [360, 66, 78]], // s block
+            [[[-1, 1], [0, 1], [0, 0], [1, 0]], [89, 100, 58]], // z block
+            [[[-1, 0], [0, 0], [-1, 1], [0, 1]], [48, 89, 85]], // o block
+            [[[-1, 0], [0, 0], [0, 1], [1, 0]], [329, 62, 81]] // t block
         ]
         this.currentPiece = JSON.parse(JSON.stringify(random(this.piecesList)))
         this.currentPiecePos = [4, 1] // x-pos, y-pos
+        this.currentPieceColor = this.currentPiece.pop()
+        // there's an extra list casing!
+        this.currentPiece = this.currentPiece[0]
         this.framesUntilDownDefault = 70
         this.framesUntilDown = this.framesUntilDownDefault
     }
@@ -36,20 +39,24 @@ class Game {
             let lineClear = true
             for (let cell of this.playingField[colIndex]) {
                 // if there isn't a cell filled, then there is no line clear
-                if (!cell) {
+                if (!cell[0]) {
                     lineClear = false
                 }
             }
+            let row = []
+            for (let i = 0; i < 10; i++) {
+                row.push([0, [0, 0, 100]])
+            }
             // if there is a line clear, remove the line
             if (lineClear) {
-                this.playingField[colIndex] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                this.playingField[colIndex] = row
                 shift++
                 this.framesUntilDownDefault--
                 this.framesUntilDown = this.framesUntilDownDefault
             } else { // otherwise, shift it
                 this.playingField[colIndex + shift] = this.playingField[colIndex]
                 if (shift > 0) {
-                    this.playingField[colIndex] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    this.playingField[colIndex] = row
                 }
             }
             colIndex--
@@ -83,7 +90,6 @@ class Game {
         }
 
         noStroke()
-        fill(0, 0, 100)
         // for each row
         let colIndex = 0
         for (let row of this.playingField) {
@@ -91,8 +97,9 @@ class Game {
             let rowIndex = 0
             for (let cell of row) {
                 // if the cell exists there...
-                if (cell) {
+                if (cell[0]) {
                     // draw it!
+                    fill(cell[1][0], cell[1][1], cell[1][2])
                     rect(this.startingX + rowIndex*this.tileSize + 1,
                          this.startingY + colIndex*this.tileSize + 1,
                          this.startingX + rowIndex*this.tileSize + this.tileSize - 1,
@@ -103,6 +110,8 @@ class Game {
             colIndex++
         }
         // display the current figure
+        let color = this.currentPieceColor
+        fill(color[0], color[1], color[2])
         for (let cell of this.currentPiece) {
             // the y-pos is the y-pos of the piece minus the y-pos of the offset
             let colIndex = this.currentPiecePos[1] - cell[1]
@@ -150,7 +159,7 @@ class Game {
                 return false
             }
             // if the playing field intersects with the piece, return false
-            if (this.playingField[colIndex][rowIndex]) {
+            if (this.playingField[colIndex][rowIndex][0]) {
                 return false
             }
         }
@@ -169,10 +178,12 @@ class Game {
             // the x-pos is the x-pos of the piece plus the x-pos of the offset
             let rowIndex = this.currentPiecePos[0] + cell[0]
             // now add it to the playing field
-            this.playingField[colIndex-1][rowIndex] = 1
+            this.playingField[colIndex-1][rowIndex] = [1, this.currentPieceColor]
         }
         this.currentPiece = JSON.parse(JSON.stringify(random(this.piecesList)))
         this.currentPiecePos = [4, 1] // x-pos, y-pos
+        this.currentPieceColor = this.currentPiece.pop()
+        this.currentPiece = this.currentPiece[0]
     }
 
     rotateLeft() {
