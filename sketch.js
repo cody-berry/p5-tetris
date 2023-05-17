@@ -1,5 +1,5 @@
 /**
- *  @author 
+ *  @author
  *  @date 2023.
  *
  */
@@ -17,6 +17,7 @@ let direction /* what direction are we currently travelling? */
 
 
 function preload() {
+    print("made it?")
     font = loadFont('data/consola.ttf')
     fixedWidthFont = loadFont('data/consola.ttf')
     variableWidthFont = loadFont('data/meiryo.ttf')
@@ -24,7 +25,7 @@ function preload() {
 
 
 function setup() {
-    let cnv = createCanvas(800, 1000)
+    let cnv = createCanvas(800, 500)
     cnv.parent('#canvas')
     colorMode(HSB, 360, 100, 100, 100)
     textFont(font, 14)
@@ -32,7 +33,13 @@ function setup() {
     /* initialize instruction div */
     instructions = select('#ins')
     instructions.html(`<pre>
-        numpad 1 → freeze sketch</pre>`)
+        numpad 1 → freeze sketch
+        . → rotate left
+        , → rotate right
+        ↑ → hard drop
+        ↓ → soft drop
+        → → move right
+        ← → move left</pre>`)
 
     debugCorner = new CanvasDebugCorner(5)
     // y starts at the tile size.
@@ -43,7 +50,7 @@ function setup() {
        from width/2. */
     startingX = width/2 - tileSize*5
 
-    game = new Game(startingX, startingY, tileSize)
+    game = new Game(startingX, startingY, tileSize, random(["tetris", "tritis", "pentis"]))
 }
 
 
@@ -53,11 +60,11 @@ function draw() {
     game.display()
     game.framesUntilDown = game.framesUntilDownDefault
     if (direction === 'left' &&
-        frameCount % 7 === 0) {
+        frameCount % 12 === 0) {
         game.moveLeft()
     }
     if (direction === 'right' &&
-        frameCount % 7 === 0) {
+        frameCount % 12 === 0) {
         game.moveRight()
     }
     if (direction === 'down') {
@@ -79,36 +86,53 @@ function keyPressed() {
             sketch stopped</pre>`)
     }
 
-    /* move left */
-    if (keyCode === LEFT_ARROW) {
-        game.moveLeft()
-        direction = 'left'
+    if (!game.paused) {
+        /* move left */
+        if (keyCode === LEFT_ARROW) {
+            game.moveLeft()
+            direction = 'left'
+        }
+
+        /* move right */
+        if (keyCode === RIGHT_ARROW) {
+            game.moveRight()
+            direction = 'right'
+        }
+
+        /* move down */
+        if (keyCode === DOWN_ARROW) {
+            direction = 'down'
+        }
+
+        /* drops every frame */
+        if (keyCode === UP_ARROW) {
+            game.setInPlace()
+        }
+
+        /* rotates left */
+        if (key === '.') {
+            game.rotateLeft()
+        }
+
+        /* rotates right */
+        if (key === ',') {
+            game.rotateRight()
+        }
+
+        /* holds the piece */
+        if (key === '\\') {
+            game.hold()
+        }
+
+        /* rotates twice instantly */
+        if (key === ';') {
+            game.rotateTwice()
+        }
     }
 
-    /* move right */
-    if (keyCode === RIGHT_ARROW) {
-        game.moveRight()
-        direction = 'right'
-    }
-
-    /* move down */
-    if (keyCode === DOWN_ARROW) {
-        direction = 'down'
-    }
-
-    /* drops every frame */
-    if (keyCode === UP_ARROW) {
-        game.setInPlace()
-    }
-
-    /* rotates left */
-    if (key === '.') {
-        game.rotateLeft()
-    }
-
-    /* rotates right */
-    if (key === ',') {
-        game.rotateRight()
+    /* toggles pause */
+    if (keyCode === 27) {
+        game.pause()
     }
 
     if (key === '`') { /* toggle debug corner visibility */

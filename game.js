@@ -1,5 +1,5 @@
 class Game {
-    constructor(startingX, startingY, tileSize) {
+    constructor(startingX, startingY, tileSize, gameMode) {
         this.startingX = startingX
         this.startingY = startingY
         this.tileSize = tileSize
@@ -11,22 +11,44 @@ class Game {
             }
             this.playingField.push(row)
         }
-        this.piecesList = [
-            [[[-1, 0], [0, 0], [1, 0], [2, 0]], [188, 83, 65]], // i block
-            [[[-1, -1], [0, -1], [1, -1], [1, 0]], [216, 96, 98]], // l block
-            [[[-1, 0], [-1, -1], [0, -1], [1, -1]], [6, 54, 85]], // j block
-            [[[-1, 0], [0, 0], [0, 1], [1, 1]], [360, 66, 78]], // s block
-            [[[-1, 1], [0, 1], [0, 0], [1, 0]], [89, 100, 58]], // z block
-            [[[-1, 0], [0, 0], [-1, 1], [0, 1]], [48, 89, 85]], // o block
-            [[[-1, 0], [0, 0], [0, 1], [1, 0]], [329, 62, 81]] // t block
-        ]
+        // tetris pieces
+        if (gameMode === "tetris") {
+            this.piecesList = [
+                [[[-1, 0], [0, 0], [1, 0], [2, 0]], [188, 83, 65]], // i block
+                [[[-1, -1], [0, -1], [1, -1], [1, 0]], [216, 96, 98]], // l block
+                [[[-1, 0], [-1, -1], [0, -1], [1, -1]], [6, 54, 85]], // j block
+                [[[-1, 0], [0, 0], [0, 1], [1, 1]], [360, 66, 78]], // s block
+                [[[-1, 1], [0, 1], [0, 0], [1, 0]], [89, 100, 58]], // z block
+                [[[-1, 0], [0, 0], [-1, 1], [0, 1]], [48, 89, 85]], // o block
+                [[[-1, 0], [0, 0], [0, 1], [1, 0]], [329, 62, 81]] // t block
+            ]
+        }
+
+
         this.currentPiece = JSON.parse(JSON.stringify(random(this.piecesList)))
         this.currentPiecePos = [4, 1] // x-pos, y-pos
         this.currentPieceColor = this.currentPiece.pop()
         // there's an extra list casing!
         this.currentPiece = this.currentPiece[0]
+
+        // holded piece starts like the current piece.
+        this.holdedPiece = JSON.parse(JSON.stringify(random(this.piecesList)))
+        this.holdedPiecePos = [4, 1] // x-pos, y-pos
+        this.holdedPieceColor = this.holdedPiece.pop()
+        // there's an extra list casing!
+        this.holdedPiece = this.holdedPiece[0]
+
+
+        // define the next piece
+        this.nextPiece = JSON.parse(JSON.stringify(random(this.piecesList)))
+        this.nextPieceColor = this.nextPiece.pop()
+        // there's an extra list casing!
+        this.nextPiece = this.nextPiece[0]
+
         this.framesUntilDownDefault = 70
         this.framesUntilDown = this.framesUntilDownDefault
+
+        this.paused = false
     }
 
     /* Description: Clears lines. */
@@ -81,7 +103,8 @@ class Game {
                 i*this.tileSize)
         }
 
-        if (frameCount % this.framesUntilDown === 0) {
+        // make sure not to do this when it is paused
+        if (frameCount % this.framesUntilDown === 0 && !this.paused) {
             let currentPiecePosCopy = [...this.currentPiecePos]
             this.currentPiecePos[1]++ // move down one
             if (!this.checkBorders()) {
@@ -117,11 +140,90 @@ class Game {
             let colIndex = this.currentPiecePos[1] - cell[1]
             // the x-pos is the x-pos of the piece plus the x-pos of the offset
             let rowIndex = this.currentPiecePos[0] + cell[0]
-            // draw it!
+            // draw the block!
             rect(this.startingX + rowIndex*this.tileSize + 1,
                 this.startingY + colIndex*this.tileSize + 1,
                 this.startingX + rowIndex*this.tileSize + this.tileSize - 1,
                 this.startingY + colIndex*this.tileSize + this.tileSize - 1)
+        }
+        // display the center
+        stroke(0, 0, 100)
+        noFill()
+        circle(this.startingX + this.currentPiecePos[0]*this.tileSize + this.tileSize/2,
+               this.startingY + this.currentPiecePos[1]*this.tileSize + this.tileSize/2,
+               this.tileSize - 6)
+
+        // display the next figure
+        color = this.nextPieceColor
+        fill(color[0], color[1], color[2])
+        noStroke()
+        let x = 30
+        let y = 2
+        for (let cell of this.nextPiece) {
+
+            // the y-pos is the y-pos of the piece minus the y-pos of the offset
+            let colIndex = y - cell[1]
+            // the x-pos is the x-pos of the piece plus the x-pos of the offset
+            let rowIndex = x + cell[0]
+            // draw the block!
+            rect(rowIndex*this.tileSize + 1,
+                colIndex*this.tileSize + 1,
+                rowIndex*this.tileSize + this.tileSize - 1,
+                colIndex*this.tileSize + this.tileSize - 1)
+        }
+        // display the ghost
+        let currentPiecePosCopy = [...this.currentPiecePos]
+
+        // move down all the way
+        while (this.checkBorders()) {
+            this.currentPiecePos[1]++
+        }
+        this.currentPiecePos[1]--
+
+        noFill()
+        stroke(0, 0, 50)
+        strokeWeight(2)
+        for (let cell of this.currentPiece) {
+            // the y-pos is the y-pos of the piece minus the y-pos of the offset
+            let colIndex = this.currentPiecePos[1] - cell[1]
+            // the x-pos is the x-pos of the piece plus the x-pos of the offset
+            let rowIndex = this.currentPiecePos[0] + cell[0]
+            // draw the block!
+            rect(this.startingX + rowIndex*this.tileSize,
+                this.startingY + colIndex*this.tileSize,
+                this.startingX + rowIndex*this.tileSize + this.tileSize,
+                this.startingY + colIndex*this.tileSize + this.tileSize)
+        }
+        this.currentPiecePos = currentPiecePosCopy
+        // display the holded piece, basically the same as displaying the
+        // next piece
+        // display the next figure
+        color = this.holdedPieceColor
+        fill(color[0], color[1], color[2])
+        noStroke()
+        x = 10
+        y = 2
+        for (let cell of this.holdedPiece) {
+            // the y-pos is the y-pos of the piece minus the y-pos of the offset
+            let colIndex = y - cell[1]
+            // the x-pos is the x-pos of the piece plus the x-pos of the offset
+            let rowIndex = x + cell[0]
+            // draw the block!
+            rect(rowIndex*this.tileSize + 1,
+                colIndex*this.tileSize + 1,
+                rowIndex*this.tileSize + this.tileSize - 1,
+                colIndex*this.tileSize + this.tileSize - 1)
+        }
+
+        // if the system is paused, display a translucent shade of grey over the
+        // screen and display PAUSED in the middle
+        if (this.paused) {
+            fill(0, 0, 25, 35)
+            rect(0, 0, width, height)
+            fill(0, 0, 100)
+            textSize(60)
+            textAlign(CENTER, CENTER)
+            text("PAUSED", width/2, height/2)
         }
     }
 
@@ -141,6 +243,20 @@ class Game {
         }
     }
 
+    /* Description: Swaps the current piece with the holded piece.
+     */
+    hold() {
+        // transport pieces and reset current piece position
+        let temp = JSON.parse(JSON.stringify(this.currentPiece))
+        this.currentPiece = JSON.parse(JSON.stringify(this.holdedPiece))
+        this.holdedPiece = temp
+        this.currentPiecePos = [4, 1]
+        // transport colors
+        temp = JSON.parse(JSON.stringify(this.currentPieceColor))
+        this.currentPieceColor = JSON.parse(JSON.stringify(this.holdedPieceColor))
+        this.holdedPieceColor = temp
+    }
+
     // returns true of piece is allowed; returns false if not
     checkBorders() {
         for (let cell of this.currentPiece) {
@@ -148,15 +264,22 @@ class Game {
             let colIndex = this.currentPiecePos[1] - cell[1]
             // the x-pos is the x-pos of the piece plus the x-pos of the offset
             let rowIndex = this.currentPiecePos[0] + cell[0]
-            // if the cell goes to one of the borders, return false
+            // if the cell goes to one of the borders, return false or do
+            // handling
             if (rowIndex < 0) {
-                return false
+                this.moveRight()
+                return this.checkBorders()
             }
             if (rowIndex > 9) {
-                return false
+                this.moveLeft()
+                return this.checkBorders()
             }
             if (colIndex > 19) {
                 return false
+            }
+            if (colIndex < 0) {
+                this.currentPiecePos[1]++
+                return this.checkBorders()
             }
             // if the playing field intersects with the piece, return false
             if (this.playingField[colIndex][rowIndex][0]) {
@@ -180,10 +303,16 @@ class Game {
             // now add it to the playing field
             this.playingField[colIndex-1][rowIndex] = [1, this.currentPieceColor]
         }
-        this.currentPiece = JSON.parse(JSON.stringify(random(this.piecesList)))
+
+        this.currentPiece = this.nextPiece
         this.currentPiecePos = [4, 1] // x-pos, y-pos
-        this.currentPieceColor = this.currentPiece.pop()
-        this.currentPiece = this.currentPiece[0]
+        this.currentPieceColor = this.nextPieceColor
+
+        // define the next piece
+        this.nextPiece = JSON.parse(JSON.stringify(random(this.piecesList)))
+        this.nextPieceColor = this.nextPiece.pop()
+        // there's an extra list casing!
+        this.nextPiece = this.nextPiece[0]
     }
 
     rotateLeft() {
@@ -222,5 +351,31 @@ class Game {
         if (!this.checkBorders()) {
             this.currentPiece = currentPieceCopy
         }
+    }
+
+    /* rotates twice. may come in handy when filling in holes. */
+    rotateTwice() {
+
+        let currentPieceCopy =
+            JSON.parse(JSON.stringify(this.currentPiece))
+        let i = 0
+        for (let cell of this.currentPiece) {
+            // up rotates to down
+            let cellY = cell[1]
+            // right rotates to left
+            let cellX = cell[0]
+
+            this.currentPiece[i][1] = -cellY
+            this.currentPiece[i][0] = -cellX
+            i++
+        }
+        if (!this.checkBorders()) {
+            this.currentPiece = currentPieceCopy
+        }
+    }
+
+    /* pauses or unpauses the game. */
+    pause() {
+        this.paused = !this.paused
     }
 }
