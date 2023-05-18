@@ -17,7 +17,6 @@ let direction /* what direction are we currently travelling? */
 
 
 function preload() {
-    print("made it?")
     font = loadFont('data/consola.ttf')
     fixedWidthFont = loadFont('data/consola.ttf')
     variableWidthFont = loadFont('data/meiryo.ttf')
@@ -25,7 +24,7 @@ function preload() {
 
 
 function setup() {
-    let cnv = createCanvas(800, 500)
+    let cnv = createCanvas(800, 800)
     cnv.parent('#canvas')
     colorMode(HSB, 360, 100, 100, 100)
     textFont(font, 14)
@@ -42,15 +41,8 @@ function setup() {
         ← → move left</pre>`)
 
     debugCorner = new CanvasDebugCorner(5)
-    // y starts at the tile size.
-    tileSize = 20
-    startingY = tileSize
-    /* x is positioned such that the board is centered in the middle of the
-       grid. since there are 5 lines to the left, 5 tileSizes should be removed
-       from width/2. */
-    startingX = width/2 - tileSize*5
 
-    game = new Game(startingX, startingY, tileSize, random(["tetris", "tritis", "pentis"]))
+    game = new Game(20, random(["tetris", "tritis", "pentis", "all"]))
 }
 
 
