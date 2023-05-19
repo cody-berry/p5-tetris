@@ -7,9 +7,13 @@ class Game {
             this.boardWidth = 14
             this.boardHeight = 27
         }
-        if (gameMode === "fractis") {
+        if (gameMode === "tritis") {
             this.boardWidth = 8
             this.boardHeight = 15
+        }
+        if (gameMode === "all") {
+            this.boardWidth = 17
+            this.boardHeight = 30
         }
         // y starts at the tile size.
         this.startingY = this.tileSize
@@ -28,7 +32,8 @@ class Game {
         // tetris pieces
         if (gameMode === "tetris") {
             this.piecesList = [
-                [[[-1, 0], [0, 0], [1, 0], [2, 0]], [188, 83, 65]], // i block
+                [[[-1, 0], [0, 0], [1, 0], [2, 0]], [188, 83, 65]], // i block (common)
+                [[[-1, 0], [0, 0], [1, 0], [2, 0]], [188, 83, 65]], // i block (common)
                 [[[-1, -1], [0, -1], [1, -1], [1, 0]], [216, 96, 98]], // l block
                 [[[-1, 0], [-1, -1], [0, -1], [1, -1]], [6, 54, 85]], // j block
                 [[[-1, 0], [0, 0], [0, 1], [1, 1]], [360, 66, 78]], // s block
@@ -40,7 +45,8 @@ class Game {
         // tritis pieces
         if (gameMode === "tritis") {
             this.piecesList = [
-                [[[-1, 0], [0, 0], [1, 0]], [188, 83, 65]], // i block
+                [[[-1, 0], [0, 0], [1, 0]], [188, 83, 65]], // i block (common)
+                [[[-1, 0], [0, 0], [1, 0]], [188, 83, 65]], // i block (common)
                 [[[-1, -1], [1, -1], [1, 0]], [216, 96, 98]], // l block
                 [[[-1, 0], [-1, -1], [1, -1]], [6, 54, 85]], // j block
                 [[[-1, 0], [0, 1], [1, 1]], [360, 66, 78]], // s block
@@ -52,7 +58,8 @@ class Game {
         // pentis pieces
         if (gameMode === "pentis") {
             this.piecesList = [
-                [[[-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0]], [188, 83, 65]], // i block
+                [[[-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0]], [188, 83, 65]], // i block (common)
+                [[[-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0]], [188, 83, 65]], // i block (common)
                 [[[-2, -1], [-1, -1], [0, -1], [1, -1], [1, 0]], [216, 96, 98]], // l block
                 [[[-1, 0], [-1, -1], [0, -1], [1, -1], [2, -1]], [6, 54, 85]], // j block
                 [[[-2, 0], [-1, 0], [0, 0], [0, 1], [1, 1]], [360, 66, 78]], // s block
@@ -64,21 +71,24 @@ class Game {
         // all piecse included
         if (gameMode === "all") {
             this.piecesList = [
-                [[[-1, 0], [0, 0], [1, 0], [2, 0]], [188, 83, 65]], // i block
+                [[[-1, 0], [0, 0], [1, 0], [2, 0]], [188, 83, 65]], // i block (common)
+                [[[-1, 0], [0, 0], [1, 0], [2, 0]], [188, 83, 65]], // i block (common)
                 [[[-1, -1], [0, -1], [1, -1], [1, 0]], [216, 96, 98]], // l block
                 [[[-1, 0], [-1, -1], [0, -1], [1, -1]], [6, 54, 85]], // j block
                 [[[-1, 0], [0, 0], [0, 1], [1, 1]], [360, 66, 78]], // s block
                 [[[-1, 1], [0, 1], [0, 0], [1, 0]], [89, 100, 58]], // z block
                 [[[-1, 0], [0, 0], [-1, 1], [0, 1]], [48, 89, 85]], // o block
                 [[[-1, 0], [0, 0], [0, 1], [1, 0]], [329, 62, 81]], // t block
-                [[[-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0]], [201, 96, 83]], // i block
+                [[[-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0]], [201, 96, 83]], // i block (common)
+                [[[-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0]], [201, 96, 83]], // i block (common)
                 [[[-2, -1], [-1, -1], [0, -1], [1, -1], [1, 0]], [216, 78, 100]], // l block
                 [[[-1, 0], [-1, -1], [0, -1], [1, -1], [2, -1]], [22, 49, 87]], // j block
                 [[[-2, 0], [-1, 0], [0, 0], [0, 1], [1, 1]], [360, 54, 87]], // s block
                 [[[-1, 1], [0, 1], [0, 0], [1, 0], [2, 0]], [89, 70, 72]], // z block
                 [[[-1, 0], [0, 1], [0, 0], [0, -1], [1, 0]], [45, 37, 91]], // + block
                 [[[-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0]], [329, 41, 81]], // [ block
-                [[[-1, 0], [0, 0], [1, 0]], [188, 100, 83]], // i block
+                [[[-1, 0], [0, 0], [1, 0]], [188, 100, 83]], // i block (common)
+                [[[-1, 0], [0, 0], [1, 0]], [188, 100, 83]], // i block (common)
                 [[[-1, -1], [1, -1], [1, 0]], [216, 100, 74]], // l block
                 [[[-1, 0], [-1, -1], [1, -1]], [22, 89, 100]], // j block
                 [[[-1, 0], [0, 1], [1, 1]], [360, 96, 71]], // s block
@@ -114,6 +124,7 @@ class Game {
         this.framesUntilDown = this.framesUntilDownDefault
 
         this.paused = false
+        this.failed = false
     }
 
     /* Description: Clears lines. */
@@ -152,6 +163,60 @@ class Game {
 
     /* Description: Displays the entire game. Is the most important function. */
     display() {
+        // display the buttons
+        // Tritis:
+        fill(0, 0, 30)
+        if (mouseX > 30 &&
+            mouseX < 150 &&
+            mouseY > 50 &&
+            mouseY < 90) {
+            fill(0, 0, 20)
+        }
+        noStroke()
+        rect(30, 50, 150, 90)
+        textSize(35)
+        textAlign(CENTER, CENTER)
+        fill(0, 0, 100)
+        text("TRITIS", 90, 70)
+
+        // Tetris:
+        fill(0, 0, 30)
+        if (mouseX > 30 &&
+            mouseX < 150 &&
+            mouseY > 120 &&
+            mouseY < 160) {
+            fill(0, 0, 20)
+        }
+        rect(30, 120, 150, 160)
+        fill(0, 0, 100)
+        text("TETRIS", 90, 140)
+
+        // Pentis:
+        fill(0, 0, 30)
+        if (mouseX > 30 &&
+            mouseX < 150 &&
+            mouseY > 190 &&
+            mouseY < 230) {
+            fill(0, 0, 20)
+        }
+        rect(30, 190, 150, 230)
+        fill(0, 0, 100)
+        text("PENTIS", 90, 210)
+
+        // All:
+        fill(0, 0, 30)
+        if (mouseX > 30 &&
+            mouseX < 150 &&
+            mouseY > 260 &&
+            mouseY < 300) {
+            fill(0, 0, 20)
+        }
+        rect(30, 260, 150, 300)
+        fill(0, 0, 100)
+        text("ALL", 90, 280)
+        textAlign(LEFT)
+
+
         this.checkLines()
         stroke(0, 0, 0)
         strokeWeight(1)
@@ -282,13 +347,29 @@ class Game {
 
         // if the system is paused, display a translucent shade of grey over the
         // screen and display PAUSED in the middle
-        if (this.paused) {
+        if (this.paused && !this.failed) {
             fill(0, 0, 25, 35)
             rect(0, 0, width, height)
             fill(0, 0, 100)
             textSize(60)
             textAlign(CENTER, CENTER)
             text("PAUSED", width/2, height/2)
+        }
+
+        // if the game has been failed, display a grey screen that is more
+        // opaque and FAILED instead of PAUSED in the center
+        if (this.failed) {
+            fill(0, 0, 25, 50)
+            rect(0, 0, width, height)
+            fill(0, 0, 100)
+            textSize(100)
+            textAlign(CENTER, CENTER)
+            text("FAILED", width/2, height/2)
+            if (this.paused) {
+                textSize(50)
+                textAlign(LEFT, TOP)
+                text("PAUSED", 0, 0)
+            }
         }
     }
 
@@ -378,6 +459,13 @@ class Game {
         this.nextPieceColor = this.nextPiece.pop()
         // there's an extra list casing!
         this.nextPiece = this.nextPiece[0]
+
+        // if the piece isn't good, the game has been failed
+        if (!this.checkBorders()) {
+            game.failed = true
+            game.paused = true
+
+        }
     }
 
     rotateLeft() {

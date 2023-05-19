@@ -70,6 +70,37 @@ function draw() {
 }
 
 
+function mousePressed() {
+    // create a game for Tritis
+    if (mouseX > 30 &&
+        mouseX < 150 &&
+        mouseY > 50 &&
+        mouseY < 90) {
+        game = new Game(20, "tritis")
+    }
+    // create a game for Tetris
+    if (mouseX > 30 &&
+        mouseX < 150 &&
+        mouseY > 120 &&
+        mouseY < 160) {
+        game = new Game(20, "tetris")
+    }
+    // create a game for Pentis
+    if (mouseX > 30 &&
+        mouseX < 150 &&
+        mouseY > 190 &&
+        mouseY < 230) {
+        game = new Game(20, "pentis")
+    }
+    // create a game for All
+    if (mouseX > 30 &&
+        mouseX < 150 &&
+        mouseY > 260 &&
+        mouseY < 300) {
+        game = new Game(20, "all")
+    }
+}
+
 function keyPressed() {
     /* stop sketch */
     if (keyCode === 97) { /* numpad 1 */
