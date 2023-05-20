@@ -24,7 +24,7 @@ function preload() {
 
 
 function setup() {
-    let cnv = createCanvas(800, 800)
+    let cnv = createCanvas(800, 700)
     cnv.parent('#canvas')
     colorMode(HSB, 360, 100, 100, 100)
     textFont(font, 14)
@@ -42,7 +42,7 @@ function setup() {
 
     debugCorner = new CanvasDebugCorner(5)
 
-    game = new Game(20, random(["tetris", "tritis", "pentis", "all"]))
+    game = new Game(20, random(["tetris", "tritis", "pentis", "all", "random"]))
 }
 
 
@@ -67,6 +67,9 @@ function draw() {
     debugCorner.setText(`frameCount: ${frameCount}`, 2)
     debugCorner.setText(`fps: ${frameRate().toFixed(0)}`, 1)
     debugCorner.showBottom()
+
+    if (frameCount > 30000) /* stop refreshing the screen after 30s */
+        noLoop()
 }
 
 
@@ -78,6 +81,7 @@ function mousePressed() {
         mouseY < 90) {
         game = new Game(20, "tritis")
     }
+
     // create a game for Tetris
     if (mouseX > 30 &&
         mouseX < 150 &&
@@ -85,6 +89,7 @@ function mousePressed() {
         mouseY < 160) {
         game = new Game(20, "tetris")
     }
+
     // create a game for Pentis
     if (mouseX > 30 &&
         mouseX < 150 &&
@@ -92,12 +97,21 @@ function mousePressed() {
         mouseY < 230) {
         game = new Game(20, "pentis")
     }
+
     // create a game for All
     if (mouseX > 30 &&
         mouseX < 150 &&
         mouseY > 260 &&
         mouseY < 300) {
         game = new Game(20, "all")
+    }
+
+    // create a game for Random
+    if (mouseX > 30 &&
+        mouseX < 150 &&
+        mouseY > 330 &&
+        mouseY < 370) {
+        game = new Game(20, "random")
     }
 }
 
