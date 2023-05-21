@@ -35,10 +35,15 @@ class Game {
         this.startingY = this.tileSize
 
         /* x is positioned such that the board is centered in the middle of the
-           grid. since there are 5 lines to the left, 5 tileSizes should be removed
-           from width/2. */
+           grid. since there are the board width over 2 lines to the left,
+            that many tileSizes should be removed from width/2. */
         this.startingX = width/2 - this.tileSize*(this.boardWidth/2)
+
         this.playingField = [] // the playing field that we have
+
+        // append a series of lists to playingField. each element of
+        // this.playingField holds a row, which contains many [cellOnOrOff,
+        // color] structures.
         for (let i = 0; i < this.boardHeight; i++) {
             let row = []
             for (let j = 0; j < this.boardWidth; j++) {
@@ -83,8 +88,8 @@ class Game {
         // pentis pieces
         if (gameMode === "pentis") {
 
-            // Pentis: A few Pentis pieces that either share properties with
-            // Tetris or are just Tetris pieces with one extra block
+            // Pentis: 7 Pentis pieces that either share properties with
+            // the Tetris pieces or are just Tetris pieces with one extra block
             this.piecesList = [
                 [[[-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0]], [188, 83, 65]], // i block (common)
                 [[[-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0]], [188, 83, 65]], // i block (common)
@@ -110,6 +115,7 @@ class Game {
                 [[[-1, 1], [0, 1], [0, 0], [1, 0]], [89, 100, 58]], // z block
                 [[[-1, 0], [0, 0], [-1, 1], [0, 1]], [48, 89, 85]], // o block
                 [[[-1, 0], [0, 0], [0, 1], [1, 0]], [329, 62, 81]], // t block
+
                 // Pentis pieces
                 [[[-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0]], [201, 96, 83]], // i block (common)
                 [[[-2, 0], [-1, 0], [0, 0], [1, 0], [2, 0]], [201, 96, 83]], // i block (common)
@@ -119,6 +125,7 @@ class Game {
                 [[[-1, 1], [0, 1], [0, 0], [1, 0], [2, 0]], [89, 70, 72]], // z block
                 [[[-1, 0], [0, 1], [0, 0], [0, -1], [1, 0]], [45, 37, 91]], // + block
                 [[[-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0]], [329, 41, 81]], // [ block
+
                 // Tritis pieces
                 [[[-1, 0], [0, 0], [1, 0]], [188, 100, 83]], // i block (common)
                 [[[-1, 0], [0, 0], [1, 0]], [188, 100, 83]], // i block (common)
@@ -299,7 +306,6 @@ class Game {
     /* Description: The Javascript equivalent of Python range. Only used in
      *              checkLines to prevent having to use a for loop. */
     range(startArg, stopArg) {
-
         // we can't modify arguments
         let start = startArg
         let stop = stopArg
@@ -572,6 +578,9 @@ class Game {
             textSize(100)
             textAlign(CENTER, CENTER)
             text("FAILED", width/2, height/2)
+
+            // if the game is paused and failed, display PAUSED in the
+            // top-left corner
             if (this.paused) {
                 textSize(50)
                 textAlign(LEFT, TOP)
@@ -735,6 +744,7 @@ class Game {
             // right rotates to up
             let cellX = cell[0]
 
+            // assign the pieces
             this.currentPiece[i][0] = -cellY
             this.currentPiece[i][1] = cellX
             i++
