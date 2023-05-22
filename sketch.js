@@ -56,15 +56,19 @@ function draw() {
     // reset the frames until down
     game.framesUntilDown = game.framesUntilDownDefault
 
-    // if the direction is left, move left every 7 frames
+    // if the direction is left, move left every 7 frames. note that the
+    // direction could still be left if the game is paused
     if (direction === 'left' &&
-        frameCount % 7 === 0) {
+        frameCount % 7 === 0 &&
+        !game.paused) {
         game.moveLeft()
     }
 
-    // if the direction is right, move right every 7 frames
+    // if the direction is right, move right every 7 frames. note that the
+    // direction could still be right if the game is paused
     if (direction === 'right' &&
-        frameCount % 7 === 0) {
+        frameCount % 7 === 0 &&
+        !game.paused) {
         game.moveRight()
     }
 
