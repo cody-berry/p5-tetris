@@ -42,6 +42,7 @@ function setup() {
 
     debugCorner = new CanvasDebugCorner(5)
 
+    // start a game of any mode (random)
     game = new Game(20, random(["tetris", "tritis", "pentis", "all", "random"]))
 }
 
@@ -49,16 +50,26 @@ function setup() {
 function draw() {
     background(234, 34, 24)
 
+    // display the game
     game.display()
+
+    // reset the frames until down
     game.framesUntilDown = game.framesUntilDownDefault
+
+    // if the direction is left, move left every 7 frames
     if (direction === 'left' &&
-        frameCount % 12 === 0) {
+        frameCount % 7 === 0) {
         game.moveLeft()
     }
+
+    // if the direction is right, move right every 7 frames
     if (direction === 'right' &&
-        frameCount % 12 === 0) {
+        frameCount % 7 === 0) {
         game.moveRight()
     }
+
+    // if the direction is down, then set the frames until down to 7 and use
+    // it for the next frame
     if (direction === 'down') {
         game.framesUntilDown = 7
     }
@@ -123,16 +134,15 @@ function keyPressed() {
             sketch stopped</pre>`)
     }
 
+    // only if the game is not paused are the keys registered
     if (!game.paused) {
         /* move left */
         if (keyCode === LEFT_ARROW) {
-            game.moveLeft()
             direction = 'left'
         }
 
         /* move right */
         if (keyCode === RIGHT_ARROW) {
-            game.moveRight()
             direction = 'right'
         }
 
@@ -179,6 +189,7 @@ function keyPressed() {
 }
 
 function keyReleased() {
+    // if a key has been released, then there should be no direction.
     direction = 'none'
 }
 
